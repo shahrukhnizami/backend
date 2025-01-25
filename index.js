@@ -1,15 +1,28 @@
-import express  from "express";
-import connectDB from './config/database.js';
+import express from "express";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
+import connectDB from "./config/database.js";
+import authRoutes from "./routes/authRoutes.js";
 
+dotenv.config();
 const app = express();
-const port = 9000;
+
+// Middleware
+app.use(bodyParser.json());
+
+// Database connection
 connectDB();
 
-app.use("/",(req,res)=>{
-    res.json({message:"Hellow From Hackthon"})
-})
+// Routes
+app.use("/api/auth", authRoutes);
 
-app.listen(9000,()=>{
-    console.log(`Starting Server on port ${port}`);
-    
-})
+// Default route
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to the Authentication API" });
+});
+
+// Start server
+const PORT = process.env.PORT || 9000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
